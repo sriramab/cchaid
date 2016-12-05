@@ -1,1 +1,2 @@
 exportPattern("^[[:alpha:]]+")
+export(cc_define_file)
