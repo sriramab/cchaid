@@ -5,7 +5,7 @@ cc_define_file<-function(x) {
   
 }
 
-# this function reads the file
+# this function reads the files
 cc_read_file_name<-function(y){
   #read file data into R
   f_read_with_Header<<-read.csv(y, header=F, sep="\t")
