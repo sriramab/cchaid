@@ -1,2 +1,2 @@
 # cchaid
-Building a decision tree based on chaid
+Building a decision tree based on chaid algorithm
