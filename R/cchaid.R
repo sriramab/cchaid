@@ -1,8 +1,9 @@
+
+#this function gets the file name from the user
 cc_define_file<-function(x) {
   read_file<-x
   cc_read_file_name(read_file)
-  
-  
+
 }
 
 # this function reads the files
@@ -23,6 +24,6 @@ cc_read_file_name<-function(y){
 cc_prepare_data_frame<-function(){
   print("hello")
 }
-a<-cc_define_file("aidwork3.txt")
+#a<-cc_define_file("aidwork3.txt")
 
 
