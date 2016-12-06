@@ -1,4 +1,4 @@
-
+## THIS FILE IS RESTRICTED TO READING INPUT FILES, ALGORITHM IS IN ANOTHER FILE
 #this function gets the file name from the user
 cc_define_file<-function(x) {
   read_file<-x
