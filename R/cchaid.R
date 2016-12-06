@@ -22,16 +22,16 @@ cc_read_file_name<-function(y){
   cc_dataset_names<<-vector()
   cc_list<<-list()
   for (i in 1:22){
-    print(i)
+    #print(i)
     data_type_by_user<<-f_inclusionAs[i]
-    print(data_type_by_user)
+    #print(data_type_by_user)
     cc_dataset_names[1] <-"Nr"
     switch(data_type_by_user,
            
            "n"={
              #create nominal variables
              aa<-f_columnsAs[i]
-             print(paste0("   ",aa))
+             #print(paste0("   ",aa))
              cc_list[[i]]<<-as.factor(f_read_without_Header[[aa]])
              cc_dataset<<-cbind(cc_dataset,cc_list[[i]])
              cc_dataset_names[i+1]<<-aa
@@ -39,7 +39,7 @@ cc_read_file_name<-function(y){
            "o"={
              #create ordered variables
              aa<-f_columnsAs[i]
-             print(paste0("   ",aa))
+             #print(paste0("   ",aa))
              cc_list[[i]]<<-as.ordered(f_read_without_Header[[aa]])
             # cc_dataset<<-data.frame(as.ordered(f_read_without_Header[[aa]]))
              cc_dataset<<-cbind(cc_dataset,cc_list[[i]])
@@ -48,7 +48,7 @@ cc_read_file_name<-function(y){
            "c"={
              #create continuous variables
              aa<-f_columnsAs[i]
-             print(paste0("   ",aa))
+             #print(paste0("   ",aa))
              cc_list[[i]]<<-as.numeric(f_read_without_Header[[aa]])
              # cc_dataset<<-data.frame(as.ordered(f_read_without_Header[[aa]]))
              cc_dataset<<-cbind(cc_dataset,cc_list[[i]])
@@ -58,11 +58,11 @@ cc_read_file_name<-function(y){
            "x"={
              #list deleted variables
              aa<-f_columnsAs[i]
-             print(paste0(" to be deleted  ",aa))
+             #print(paste0(" to be deleted  ",aa))
              #cc_dataset<<-data.frame(as.factor(f_read_without_Header[[aa]]))
            },
            {
-             print("default")
+             #print("default")
            }
       
     )
@@ -71,13 +71,13 @@ cc_read_file_name<-function(y){
   
  
   for (i in 1:19){
-    print(paste0(i,"--", length(cc_list[[i]])))
+   # print(paste0(i,"--", length(cc_list[[i]])))
   }
   cc_prepare_data_frame()
   }
 
 cc_prepare_data_frame<-function(){
-  print("hello")
+  #print("hello")
   cc_names<<-na.omit(cc_dataset_names)
   cc_names<<-c("Nr", cc_names)
   colnames(cc_dataset)<<-cc_names
