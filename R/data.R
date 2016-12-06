@@ -16,6 +16,6 @@
 #' @source \href{http://github.com/sriramb/cchaid}{Srirama}
 #'
 #' @examples
-#' data(cc_demo_data)
+#' data(cchaid)
 #' 
 "cc_demo_data"
