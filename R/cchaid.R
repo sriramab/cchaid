@@ -18,7 +18,7 @@ cc_read_file_name<-function(y){
   #class(f_datatypeList)
   print(paste0("Total variables read: ", length(f_inclusionAs), " ignored: ", ignored[["x"]][1]))
   cc_dataset<<-data.frame(1:length(f_read_without_Header[[1]]))
-  
+  cc_dataset_names<<-vector()
   cc_list<<-list()
   for (i in 1:22){
     print(i)
@@ -32,6 +32,7 @@ cc_read_file_name<-function(y){
              print(paste0("   ",aa))
              cc_list[[i]]<<-as.factor(f_read_without_Header[[aa]])
              cc_dataset<<-cbind(cc_dataset,cc_list[[i]])
+             #cc_dataset_names[i]<-aa
            },
            "o"={
              #create nominal variable
@@ -39,6 +40,17 @@ cc_read_file_name<-function(y){
              print(paste0("   ",aa))
              cc_list[[i]]<<-as.ordered(f_read_without_Header[[aa]])
             # cc_dataset<<-data.frame(as.ordered(f_read_without_Header[[aa]]))
+             cc_dataset<<-cbind(cc_dataset,cc_list[[i]])
+            # cc_dataset_names<-c(cc_dataset_names,aa)
+           },
+           "c"={
+             #create nominal variable
+             aa<-f_columnsAs[i]
+             print(paste0("   ",aa))
+             cc_list[[i]]<<-as.numeric(f_read_without_Header[[aa]])
+             # cc_dataset<<-data.frame(as.ordered(f_read_without_Header[[aa]]))
+             cc_dataset<<-cbind(cc_dataset,cc_list[[i]])
+             #cc_dataset_names<-c(cc_dataset_names,aa)
            },
            "x"={
              #create nominal variable
@@ -53,7 +65,10 @@ cc_read_file_name<-function(y){
     )
   }
  # cc_dataset<-data.frame(cc_list)
-  cc_dataset  <-  as.data.frame(matrix(unlist(cc_list), nrow=length(unlist(cc_list[[1]]))))
+  #cc_dataset  <-  as.data.frame(matrix(unlist(cc_list), nrow=length(unlist(cc_list[[1]]))))
+  for (i in 1:19){
+    print(paste0(i,"--", length(cc_list[[i]])))
+  }
   cc_prepare_data_frame()
   }
 
