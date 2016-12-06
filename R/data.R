@@ -1,21 +1,20 @@
-#' Household survey data
+#' Household survey of 2004
 #'
-#' Data from a household survey in 2004
+#' A dataset containing the interviews of 54,000
+#'  participants The variables are as follows:
 #'
-#' @docType data
+#' @format A data frame with 53940 rows and 10 variables:
+#' \describe{
+#'   \item{Urb}{Urban Residence}
+#'   \item{Comp}{weight }
+#'   \item{Child}{quality }
+#'   \item{Day}{ colour, }
+#'   \item{pAge}{a measurement  }
 #'
-#' @usage data(cc_demo_data)
-#'
-#' @format An object of class \code{"cross"}; see \code{\link[qtl]{read.cross}}.
-#'
-#' @keywords datasets
-#'
-#' @references Srirama
-#' (\href{http://github.com/sriramb/cchaid}{Srirama})
-#'
-#' @source \href{http://github.com/sriramb/cchaid}{Srirama}
-#'
-#' @examples
-#' data(cchaid)
-#' 
+#'   \item{SECx}{length}
+#'   \item{Ncar}{width }
+#'   \item{Gend}{depth }
+#'   \item{Driver}{total z }
+#'   \item{Dur}{width of top }
+#' }
 "cc_demo_data"
