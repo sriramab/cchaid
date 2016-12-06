@@ -77,6 +77,6 @@ cc_prepare_data_frame<-function(){
   #cc_imported_data
   
 }
-a<-cc_define_file("aidwork3.txt")
+#a<-cc_define_file("aidwork3.txt")
 
 
