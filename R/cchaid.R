@@ -6,8 +6,8 @@
 #' @return A dataframe with user selected fields
 #' @export
 #' @examples 
-#' cc_define_file("filename.txt")
-cc_define_file<-function(x) {
+#' cc_read_file("filename.txt")
+cc_read_file<-function(x) {
   read_file<-x
   cc_read_file_name(read_file)
   

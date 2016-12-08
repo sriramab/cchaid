@@ -1,7 +1,7 @@
 Package: cchaid
 Type: Package
-Title: cchaid Is An Algorithm To Handle Continuous Response
-Version: 0.1.0
+Title: cchaid is an Algorithm to Handle Continuous Responses in Decision Trees
+Version: 0.1.161208
 Author: Srirama Bhamidipati
 Maintainer: The package maintainer <yourself@somewhere.net>
 Description: More about what it does (maybe more than one line)
