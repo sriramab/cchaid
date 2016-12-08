@@ -3,10 +3,10 @@
 #' This function reads user file
 #' 
 #' @param x A file name
-#' @return A dataframe with user selected fields
+#' @return A dataframe with user selected fields in a tab-delimited text file.
 #' @export
 #' @examples 
-#' cc_read_file("filename.txt")
+#' my.df<-cc_read_file("filename.txt")
 cc_read_file<-function(x) {
   read_file<-x
   cc_read_file_name(read_file)
