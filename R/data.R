@@ -17,4 +17,4 @@
 #'   \item{Driver}{total z }
 #'   \item{Dur}{width of top }
 #' }
-"cc_demo_data"
+"cc_dataset"
