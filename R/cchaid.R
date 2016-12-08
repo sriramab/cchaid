@@ -1,5 +1,12 @@
 ## THIS FILE IS RESTRICTED TO READING INPUT FILES, ALGORITHM IS IN ANOTHER FILE
 #this function gets the file name from the user
+#' This function reads user file
+#' 
+#' @param x A file name
+#' @return A dataframe with user selected fields
+#' @export
+#' @examples 
+#' cc_define_file("filename.txt")
 cc_define_file<-function(x) {
   read_file<-x
   cc_read_file_name(read_file)
