@@ -10,12 +10,12 @@ cc_read_file(x)
 \item{x}{A file name}
 }
 \value{
-A dataframe with user selected fields
+A dataframe with user selected fields in a tab-delimited text file.
 }
 \description{
 This function reads user file
 }
 \examples{
-cc_read_file("filename.txt")
+my.df<-cc_read_file("filename.txt")
 }
 
