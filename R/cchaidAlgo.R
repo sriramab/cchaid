@@ -21,36 +21,47 @@ do_ftest <-function(dF){ #should get a data.frame as dF
  selectedVariable<<-names(subset(dF,select=-c(1, ncol(dF))))[which.max(f_values)]
  print(paste0("Variable explaining the most: ",selectedVariable))
  
- # split for selected variable
+ # split for selected variable on table
+ 
  split_groups<<-split(dF[,-c(which(colnames(dF)==selectedVariable[1]))], dF[[selectedVariable[1]]])
-return(split_groups)
+ sapply(split_groups,nrow )
+ return(split_groups)
  }
 #a<-cc_dataset
 #do_ftest(a)
 
 
-cc_f_test<-function (inputdf, depth=1){
-  
+cc_f_test<-function (inputdf, depth=1, minbucket=100){
+  returned.mylist<<-list()
   if (depth>3 | depth<1) {
     #if (!is.integer(depth)) warning("value rounded down as -> ", round(depth)) 
     warning(" max value of 3 adopted")
+    depth<-3
     
   }
   if (!is.integer(depth)) warning("value rounded down as -> ", round(depth)) 
-  print("good")
+  #print("good")
   my.list<<-inputdf
   depths<-1
-  while (depths <= depth){
-  
-  #returned.mylist<<-do_ftest(my.list) #working
-  my.list<<-lapply(my.list, do_ftest())
+  returned.mylist[depths]<<-do_ftest(my.list) #working
+  # while (depths <= depth){
+  # 
+  # 
+  # for (i in 1:length(returned.mylist)){
+  #   aabbccdd<-do_ftest
+  # }
+  #my.list<<-lapply(my.list, do_ftest())
   depths<-depths+1
   }
   
-}
+
 a<-cc_dataset
 cc_f_test(a, depth=2)
 
+for (i in 1:length(returned.mylist)){
+  print(names(returned.mylist[i]))
+  
+}
 
 # ######TRIAL SPACE
 # #FIND WHICH VARIABLE IS MOST EXPLANING THE RESPONSE
