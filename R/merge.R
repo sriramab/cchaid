@@ -1,4 +1,4 @@
-## THIS FILE IS RESTRICTED TO MERGING OF PREDICTORS
+## THIS FILE IS RESTRICTED TO MERGING OF PREDICTORS, F test is the square of t test when compairing a pair
 # this function gets the DATAFRAME from the user, merges insignificant levels
 #' This function reads user file
 #' 
@@ -7,9 +7,6 @@
 #' @export
 #' @examples 
 #' my.df<-cc_read_file("filename.txt")
-
-
-
 
 
 ccmerge<-function(data=x, alpha_merge=0.05){
@@ -26,29 +23,34 @@ ccmerge<-function(data=x, alpha_merge=0.05){
     typeColumn<-class(data[,i])[1]
     switch(typeColumn, 
             "factor" ={
-              n_merge(data[,i])
+              nominal_merge(data, data[,i],i)
             }
             ,"ordered"={
-              o_merge(data[,i])
+              ordinal_merge(data, data[,i],i)
             }
           )
   }
   
-  
-  
-  
 }
 
-n_merge<-function(y){
+nominal_merge<-function(data, y,i){
   
   l=length(levels(y))
+  
   print(paste("Predictor has ", l, " levels"))
+  p=(pairwise.t.test(data[,ncol(data)],y, p.adjust.method = "bonf"))$p.value
+  p_max=which(p==max(p,na.rm = TRUE), arr.ind=TRUE)
+  print(p)
+  print(p_max)
+  print(rownames(p))
+  print(colnames(p))
 }
 
-o_merge<-function(y){
+ordinal_merge<-function(data, y,i){
   #print(paste("inside ordinal merge=", a10))
   l=length(levels(y))
   print(paste("Predictor has ", l, " levels"))
 }
 
 ccmerge(a)
+#which(matrix_values==max(matrix_values,na.rm = TRUE), arr.ind=TRUE)
