@@ -38,18 +38,24 @@ nominal_merge<-function(data, y,i){
   l=length(levels(y))
   
   print(paste("Predictor has ", l, " levels"))
-  p=(pairwise.t.test(data[,ncol(data)],y, p.adjust.method = "bonf"))$p.value
-  p_max=which(p==max(p,na.rm = TRUE), arr.ind=TRUE)
-  print(p)
-  print(p_max)
-  print(rownames(p))
-  print(colnames(p))
+ ### KIM CHECK IT FROM HERE------------#####
+   p=(pairwise.t.test(data[,ncol(data)],y, p.adjust.method = "none"))$p.value
+   p_max=which(p==max(p,na.rm = TRUE), arr.ind=TRUE) #CHECK
+   print(p)
+### KIM CHECK IT FROM HERE------------#####
+   print(p_max)
+   print(rownames(p[unlist(p)[1],unlist(p)[2]]))
+  # print(colnames(p))
+  
+  #ifelse(max(p, na.rm = TRUE)>alpha_merge, print(paste("all of them insignificant")), print(paste("nothing")))
 }
 
 ordinal_merge<-function(data, y,i){
   #print(paste("inside ordinal merge=", a10))
   l=length(levels(y))
   print(paste("Predictor has ", l, " levels"))
+  p=(pairwise.t.test(data[,ncol(data)],y, p.adjust.method = "none"))$p.value
+  print(p)
 }
 
 ccmerge(a)
