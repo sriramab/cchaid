@@ -39,7 +39,8 @@ nominal_merge<-function(data, y,i){
   
   print(paste(i, " has ", l, " levels"))
  
-   p=(pairwise.t.test(data[,ncol(data)],y, p.adjust.method = "none"))$p.value
+   p=(pairwise.t.test(data[,ncol(data)],y, p.adjust.method = "none",paired=FALSE, 
+                                      pool.sd=FALSE,var.equal = TRUE))$p.value
    p_max=which(p==max(p,na.rm = TRUE), arr.ind=TRUE) #CHECK
    print(p)
    
@@ -50,12 +51,6 @@ nominal_merge<-function(data, y,i){
    nameofMergedCategory<-paste(r,c, sep = "")
    print(paste("merged categories", nameofMergedCategory))
    cat("\n\n")
-   
-   
-   
-   
-   
-   
   
   }
 
@@ -64,7 +59,8 @@ ordinal_merge<-function(data, y,i){
   
   l=length(levels(y))
   print(paste(i,"  has ", l, " levels"))
-  p=(pairwise.t.test(data[,ncol(data)],y, p.adjust.method = "none"))$p.value
+  p=(pairwise.t.test(data[,ncol(data)],y, p.adjust.method = "none",paired=FALSE, 
+                                      pool.sd=FALSE,var.equal = TRUE))$p.value
   print(p)
   p_max=which(p==max(p,na.rm = TRUE), arr.ind=TRUE) #CHECK
    
