@@ -9,7 +9,7 @@
 #' my.df<-cc_read_file("filename.txt")
 
 
-ccmerge<-function(data=x, alpha_merge=0.05){
+ccmerge<-function(data=x, alpha_merge=0.05, alpha_split=0.05){
   #print(paste(names(data), " -- ", alpha_merge))
   if(!is.data.frame(data)) stop("data is not a dataframe", call. = TRUE)
   if(alpha_merge>1) warning("p value provided for alpha_merge should be <=1", call. = TRUE)
@@ -23,17 +23,17 @@ ccmerge<-function(data=x, alpha_merge=0.05){
     typeColumn<-class(data[,i])[1]
     switch(typeColumn, 
             "factor" ={
-              nominal_merge(data, data[,i],i)
+              nominal_merge(data, data[,i],i, alpha_merge,alpha_split)
             }
             ,"ordered"={
-              ordinal_merge(data, data[,i],i)
+              ordinal_merge(data, data[,i],i, alpha_merge,alpha_split)
             }
           )
   }
   
 }
 
-nominal_merge<-function(data, y,i){
+nominal_merge<-function(data, y,i, alpha_merge,alpha_split){
   
   l=length(levels(y))
   
@@ -41,20 +41,31 @@ nominal_merge<-function(data, y,i){
  
    p=(pairwise.t.test(data[,ncol(data)],y, p.adjust.method = "none",paired=FALSE, 
                                       pool.sd=FALSE,var.equal = TRUE))$p.value
-   p_max=which(p==max(p,na.rm = TRUE), arr.ind=TRUE) #CHECK
+   
    print(p)
    
-   r<-rownames(p)[p_max[,1]]
-   c<-colnames(p)[p_max[,2]]
+   if(l>2){
+     
+     p_max=which(p==max(p,na.rm = TRUE), arr.ind=TRUE) #CHECK
+     r<-rownames(p)[p_max[,1]]
+     c<-colnames(p)[p_max[,2]]
    
-   #print(p_max)
-   nameofMergedCategory<-paste(r,c, sep = "-")
-   print(paste("merged categories", nameofMergedCategory))
-   cat("\n\n")
+      #print(p_max)
+      nameofMergedCategory<-paste(r,c, sep = "-")
+      print(paste("merged categories", nameofMergedCategory))
+      cat("\n\n")
+   
+      }else{
+        print("do bonforeni correction")
+        cat("\n\n")
+        cat("\n\n")
+   }
+   
+   
   
   }
 
-ordinal_merge<-function(data, y,i){
+ordinal_merge<-function(data, y,i, alpha_merge,alpha_split){
   #print(paste("inside ordinal merge=", a10))
   
   l=length(levels(y))
@@ -62,7 +73,9 @@ ordinal_merge<-function(data, y,i){
   p=(pairwise.t.test(data[,ncol(data)],y, p.adjust.method = "none",paired=FALSE, 
                                       pool.sd=FALSE,var.equal = TRUE))$p.value
   print(p)
-  p_max=which(p==max(diag(p),na.rm = TRUE), arr.ind=TRUE) #CHECK
+  
+  if(l>2){
+    p_max=which(p==max(diag(p),na.rm = TRUE), arr.ind=TRUE) #CHECK
    
    
    r<-rownames(p)[p_max[,1]]
@@ -72,6 +85,13 @@ ordinal_merge<-function(data, y,i){
    nameofMergedCategory<-paste(r,c, sep = "-")
    print(paste("merged categories", nameofMergedCategory))
    cat("\n\n")
+  }else{
+    print("do bonforeni correction")
+        cat("\n\n")
+        cat("\n\n")
+  }
+  
+  
 }
 
 ccmerge(a)
