@@ -16,7 +16,7 @@ ccmerge<-function(data=x, alpha_merge=0.05){
   
   # Detect each column on its data_type -> function to be used is class; 
   # and send it to its appropriate function for merging
-  n<-colnames(data)
+  n<-colnames(data[,-c(1,ncol(data))])
   #print(n)
   
   for (i in n){
@@ -37,26 +37,45 @@ nominal_merge<-function(data, y,i){
   
   l=length(levels(y))
   
-  print(paste("Predictor has ", l, " levels"))
- ### KIM CHECK IT FROM HERE------------#####
+  print(paste(i, " has ", l, " levels"))
+ 
    p=(pairwise.t.test(data[,ncol(data)],y, p.adjust.method = "none"))$p.value
    p_max=which(p==max(p,na.rm = TRUE), arr.ind=TRUE) #CHECK
    print(p)
-### KIM CHECK IT FROM HERE------------#####
-   print(p_max)
-   print(rownames(p[unlist(p)[1],unlist(p)[2]]))
-  # print(colnames(p))
+   
+   r<-rownames(p)[p_max[,1]]
+   c<-colnames(p)[p_max[,2]]
+   
+   #print(p_max)
+   nameofMergedCategory<-paste(r,c, sep = "")
+   print(paste("merged categories", nameofMergedCategory))
+   cat("\n\n")
+   
+   
+   
+   
+   
+   
   
-  #ifelse(max(p, na.rm = TRUE)>alpha_merge, print(paste("all of them insignificant")), print(paste("nothing")))
-}
+  }
 
 ordinal_merge<-function(data, y,i){
   #print(paste("inside ordinal merge=", a10))
+  
   l=length(levels(y))
-  print(paste("Predictor has ", l, " levels"))
+  print(paste(i,"  has ", l, " levels"))
   p=(pairwise.t.test(data[,ncol(data)],y, p.adjust.method = "none"))$p.value
   print(p)
+  p_max=which(p==max(p,na.rm = TRUE), arr.ind=TRUE) #CHECK
+   
+   
+   r<-rownames(p)[p_max[,1]]
+   c<-colnames(p)[p_max[,2]]
+   
+   #print(p_max)
+   nameofMergedCategory<-paste(r,c, sep = "")
+   print(paste("merged categories", nameofMergedCategory))
+   cat("\n\n")
 }
 
 ccmerge(a)
-#which(matrix_values==max(matrix_values,na.rm = TRUE), arr.ind=TRUE)
