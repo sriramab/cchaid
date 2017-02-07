@@ -48,7 +48,7 @@ nominal_merge<-function(data, y,i){
    c<-colnames(p)[p_max[,2]]
    
    #print(p_max)
-   nameofMergedCategory<-paste(r,c, sep = "")
+   nameofMergedCategory<-paste(r,c, sep = "-")
    print(paste("merged categories", nameofMergedCategory))
    cat("\n\n")
   
@@ -62,14 +62,14 @@ ordinal_merge<-function(data, y,i){
   p=(pairwise.t.test(data[,ncol(data)],y, p.adjust.method = "none",paired=FALSE, 
                                       pool.sd=FALSE,var.equal = TRUE))$p.value
   print(p)
-  p_max=which(p==max(p,na.rm = TRUE), arr.ind=TRUE) #CHECK
+  p_max=which(p==max(diag(p),na.rm = TRUE), arr.ind=TRUE) #CHECK
    
    
    r<-rownames(p)[p_max[,1]]
    c<-colnames(p)[p_max[,2]]
    
    #print(p_max)
-   nameofMergedCategory<-paste(r,c, sep = "")
+   nameofMergedCategory<-paste(r,c, sep = "-")
    print(paste("merged categories", nameofMergedCategory))
    cat("\n\n")
 }
