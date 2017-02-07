@@ -46,17 +46,28 @@ nominal_merge<-function(data, y,i, alpha_merge,alpha_split){
    
    if(l>2){
      
-     p_max=which(p==max(p,na.rm = TRUE), arr.ind=TRUE) #CHECK
-     r<-rownames(p)[p_max[,1]]
-     c<-colnames(p)[p_max[,2]]
+    
+     p_max_value = max(p, na.rm = TRUE) # this picks the max p value or the least significant p
+     
+     if (p_max_value < alpha_merge) {
+       print("call bonforeni")
+       cat("\n\n")
+       cat("\n\n")
+     } else {
+       p_max = which(p == max(p, na.rm = TRUE), arr.ind = TRUE) #CHECK
+       r <- rownames(p)[p_max[, 1]]
+       c <- colnames(p)[p_max[, 2]]
+       
+       #print(p_max)
+       nameofMergedCategory <- paste(r, c, sep = "-")
+       print(paste("merged categories", nameofMergedCategory))
+       cat("\n\n")
+     }
+     
    
-      #print(p_max)
-      nameofMergedCategory<-paste(r,c, sep = "-")
-      print(paste("merged categories", nameofMergedCategory))
-      cat("\n\n")
    
       }else{
-        print("do bonforeni correction")
+        print("call bonforeni")
         cat("\n\n")
         cat("\n\n")
    }
@@ -75,18 +86,26 @@ ordinal_merge<-function(data, y,i, alpha_merge,alpha_split){
   print(p)
   
   if(l>2){
-    p_max=which(p==max(diag(p),na.rm = TRUE), arr.ind=TRUE) #CHECK
+    
+    p_max_value<-max(diag(p),na.rm = TRUE) # this picks the max p value or the least significant p
    
-   
-   r<-rownames(p)[p_max[,1]]
-   c<-colnames(p)[p_max[,2]]
-   
-   #print(p_max)
-   nameofMergedCategory<-paste(r,c, sep = "-")
-   print(paste("merged categories", nameofMergedCategory))
-   cat("\n\n")
+    if (p_max_value < alpha_merge) {
+       print("call bonforeni")
+       cat("\n\n")
+       cat("\n\n")
+     } else {
+       p_max = which(p == max(diag(p), na.rm = TRUE), arr.ind = TRUE) #CHECK
+       r <- rownames(p)[p_max[, 1]]
+       c <- colnames(p)[p_max[, 2]]
+       
+       #print(p_max)
+       nameofMergedCategory <- paste(r, c, sep = "-")
+       print(paste("merged categories", nameofMergedCategory))
+       cat("\n\n")
+     }
+  
   }else{
-    print("do bonforeni correction")
+    print("call correction")
         cat("\n\n")
         cat("\n\n")
   }
