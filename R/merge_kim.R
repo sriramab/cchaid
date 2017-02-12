@@ -33,18 +33,25 @@ ccmerge <- function(data = x,
   print(n)
   
   z<-c(0)
-  p_aov_val <- vector("numeric")
+  p_aov_val <- list("numeric") # Initialization of a list to store p-values for respective predictor.
   
   for (i in n) {
     p_aov<-merging_loop(data, data[, i], i, alpha_merge, alpha_split)[1] #Get adj. p-values with Bonferroni correction, which is an output of "merging_loop" function
     #print(p_aov)
     
     z<-z+1
-    p_aov_val[z]<-p_aov
+    p_aov_val[z]<-p_aov # List of p-value for respective predictors.
    
-   print(p_aov_val)
    cat("\n")
+   
   }
+  
+  names(p_aov_val)<-n
+  print(p_aov_val)
+  
+  t<-(which.min(p_aov_val)) # Find the predictor with most significant split.
+  
+  return(t)
 }
 
 ##--------------------------------------------------------------------------##
@@ -60,9 +67,12 @@ merging_loop <- function(data, y, i, alpha_merge, alpha_split) {
   cat("\n")
   
   if (l <= 2){
-    p_aov = as.matrix(summary((aov(data[, ncol(data)]~data[,i],data)))[[1]][,5])
+    p_aov = as.matrix(summary((aov(data[, ncol(data)]~data[,i],data)))[[1]][,5])[1]
     print(paste("========================Finished Merging loop=========================="))
-    print(paste("Adjusted p-value with bonferroni correction:",p_aov[1]))
+    
+    #p_adj = p_aov * Bonferroni_correction(type,c,r)
+    
+    print(paste("Adusted p-value with bonferroni correction:",p_aov))
     cat("\n\n")
   }else{
     k<-c(0)    #index k for loop
@@ -77,10 +87,6 @@ merging_loop <- function(data, y, i, alpha_merge, alpha_split) {
       }else if(class(data[,i])[1]=="ordered"){
         p_max_value = max(diag(p), na.rm = TRUE) # This picks the max p value ordinal predictor, which means the least significant pair.
       }
-      
-      # print(p)
-      # print(p_max_value)
-      # print(alpha_merge)
       
       if(l==2|(p_max_value < alpha_merge)) break
       
@@ -102,9 +108,12 @@ merging_loop <- function(data, y, i, alpha_merge, alpha_split) {
       
     }
     
-    p_aov = as.matrix(summary((aov(data[, ncol(data)]~data[,i],data)))[[1]][,5])
-    print(paste("======================Finished Merging loop for '",colnames(data[i]),"'====================="))
-    print(paste("Adjusted p-value with bonferroni correction:",p_aov[1]))
+    p_aov = as.matrix(summary((aov(data[, ncol(data)]~data[,i],data)))[[1]][,5])[1]
+    print(paste("========================Finished Merging loop=========================="))
+    
+    #p_adj = p_aov * Bonferroni_correction(type,c,r)
+    
+    print(paste("Adusted p-value with bonferroni correction:",p_aov))
     cat("\n\n")
     
   }
@@ -115,7 +124,6 @@ merging_loop <- function(data, y, i, alpha_merge, alpha_split) {
 merging_function <- function(data, y, r, c, nameofMergedCategory, i) {
   
   list_of_levels = levels(data[,i])
-  #print(list_of_levels)
   
   for (q in seq_along(list_of_levels)) {
     if (list_of_levels[q] == r || list_of_levels[q] == c) {
@@ -124,10 +132,12 @@ merging_function <- function(data, y, r, c, nameofMergedCategory, i) {
   }
   levels(data[,i]) <- list_of_levels
   
-  #cat("\n")
-  
   return(data[,i])
 }
 
+bonferroni_correction <- function(type,c,r){
+  
+}
+  
 
 ccmerge(a)
