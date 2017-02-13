@@ -2,7 +2,7 @@
 # F test is the square of t test when compairing a pair
 # this function ccmerge gets the DATAFRAME from the user, merges insignificant levels
 #' This function merges insignificant categories(levels) of each column within a dataframe
-#'
+#' @importFrom rockchalk combineLevels
 #' @param x a dataframe from user, as constructed using cc_read_file()
 #' @return Not yet, but should return a list of lists of dataframes.
 #' @export
@@ -36,10 +36,10 @@ ccmerge <- function(data = x,
     switch(typeColumn,
            #IF FACTOR: GO TO NOMINAL_MERGE, IF ORDERED: GO TO ORDINAL_MERGE
            "factor" = {
-             nominal_merge(data, data[, i], i, alpha_merge, alpha_split)
+             nominal_merge(data, i, alpha_merge, alpha_split)
            }
            , "ordered" = {
-             ordinal_merge(data, data[, i], i, alpha_merge, alpha_split)
+             ordinal_merge(data,  i, alpha_merge, alpha_split)
            })
   }
   
@@ -50,15 +50,15 @@ ccmerge <- function(data = x,
 # OF DATAFRAME data
 ##--------------------------------------------------------------------------##
 
-nominal_merge <- function(data, y, i, alpha_merge, alpha_split) {
-  l = length(levels(y))
+nominal_merge <- function(data, i, alpha_merge, alpha_split) {
+  l = length(levels(data[,i]))
   
   print(paste(i, " has ", l, " levels"))
   
   p = (
     pairwise.t.test(
       data[, ncol(data)],
-      y,
+      data[,i],
       p.adjust.method = "none",
       paired = FALSE,
       pool.sd = FALSE,
@@ -84,13 +84,15 @@ nominal_merge <- function(data, y, i, alpha_merge, alpha_split) {
       #print(p_max)
       nameofMergedCategory <- paste(r, c, sep = "-") #------- MERGED HERE WITH A HYPHEN
       print(paste("merge these categories", nameofMergedCategory))
-      
+      #data[,i] <- rockchalk::combineLevels(data[,i], levs = c(r, c), newLabel = nameofMergedCategory)
+      #combineLevels(fac, levs, newLabel)
+
       
       cat("\n\n")
       
       
       # CALL MERGING FUNCTION merging_function()
-      merging_function(data, y, r, c, nameofMergedCategory, i)
+      merging_function(data, r, c, nameofMergedCategory, i)
       
     }
     
@@ -112,15 +114,15 @@ nominal_merge <- function(data, y, i, alpha_merge, alpha_split) {
 ##--------------------------------------------------------------------------##
 
 
-ordinal_merge <- function(data, y, i, alpha_merge, alpha_split) {
+ordinal_merge <- function(data, i, alpha_merge, alpha_split) {
   #print(paste("inside ordinal merge=", a10))
   
-  l = length(levels(y))
+  l = length(levels(data[,i]))
   print(paste(i, "  has ", l, " levels"))
   p = (
     pairwise.t.test(
       data[, ncol(data)],
-      y,
+      data[,i],
       p.adjust.method = "none",
       paired = FALSE,
       pool.sd = FALSE,
@@ -147,6 +149,8 @@ ordinal_merge <- function(data, y, i, alpha_merge, alpha_split) {
       nameofMergedCategory <- paste(r, c, sep = "-") #------- MERGED HERE WITH A HYPHEN
       print(paste("merge these categories", nameofMergedCategory))
       cat("\n\n")
+      #data[,i] <-rockchalk::combineLevels(data[,i], levs = c(r, c), newLabel = nameofMergedCategory)
+     
     }
     
   } else{
@@ -166,9 +170,9 @@ ordinal_merge <- function(data, y, i, alpha_merge, alpha_split) {
 # REPLACE THEM WITH nameofMergedCategory: MEANS THAT THESE TWO LEVELS ARE MERGED FOR BETTER PREDICTION
 ##--------------------------------------------------------------------------##
 
-merging_function <- function(data, y, r, c, nameofMergedCategory, i) {
+merging_function <- function(data, r, c, nameofMergedCategory, i) {
  
-   list_of_levels = levels(y)
+   list_of_levels = levels(data[,i])
   
   
   for (q in seq_along(list_of_levels)) {
@@ -186,4 +190,4 @@ merging_function <- function(data, y, r, c, nameofMergedCategory, i) {
 }
 
 
-ccmerge(a)
+
