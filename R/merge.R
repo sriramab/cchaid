@@ -84,7 +84,7 @@ nominal_merge <- function(data, i, alpha_merge, alpha_split) {
       #print(p_max)
       nameofMergedCategory <- paste(r, c, sep = "-") #------- MERGED HERE WITH A HYPHEN
       print(paste("merge these categories", nameofMergedCategory))
-      #data[,i] <- rockchalk::combineLevels(data[,i], levs = c(r, c), newLabel = nameofMergedCategory)
+      data[,i] <- rockchalk::combineLevels(data[,i], levs = c(r, c), newLabel = nameofMergedCategory)
       #combineLevels(fac, levs, newLabel)
 
       
@@ -149,7 +149,7 @@ ordinal_merge <- function(data, i, alpha_merge, alpha_split) {
       nameofMergedCategory <- paste(r, c, sep = "-") #------- MERGED HERE WITH A HYPHEN
       print(paste("merge these categories", nameofMergedCategory))
       cat("\n\n")
-      #data[,i] <-rockchalk::combineLevels(data[,i], levs = c(r, c), newLabel = nameofMergedCategory)
+      data[,i] <-rockchalk::combineLevels(data[,i], levs = c(r, c), newLabel = nameofMergedCategory)
      
     }
     
