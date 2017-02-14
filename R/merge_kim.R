@@ -20,7 +20,7 @@
 
 ccmerge <- function(data = x,
                     alpha_merge = 0.05,
-                    alpha_split = 0.05) {
+                    depth = 3) {
   #print(paste(names(data), " -- ", alpha_merge))
   if (!is.data.frame(data))
     stop("data is not a dataframe", call. = TRUE)
@@ -33,25 +33,22 @@ ccmerge <- function(data = x,
   print(n)
   
   z<-c(0)
-  p_aov_val <- list("numeric") # Initialization of a list to store p-values for respective predictor.
+  p_adj_list<-list()
+  merged<-list()
+
+  merging_result<-vector("list") # Initialization of a list to store p-values and data[,i] for respective predictor i.
   
   for (i in n) {
-    p_aov<-merging_loop(data, data[, i], i, alpha_merge, alpha_split)[1] #Get adj. p-values with Bonferroni correction, which is an output of "merging_loop" function
-    #print(p_aov)
+    merging_result[[i]]<-merging_loop(data, data[, i], i, alpha_merge, depth) #Get adj. p-values with Bonferroni correction, which is an output of "merging_loop" function
     
-    z<-z+1
-    p_aov_val[z]<-p_aov # List of p-value for respective predictors.
-   
-   cat("\n")
-   
+    p_adj_list[i]<-merging_result[[i]][1] # a list to store p_adj for respective predictor i
+    merged[i]<-merging_result[[i]][2] # a list to store merged category for respective predictor i
   }
+ 
+  merged<-cbind(Nr=seq.int(nrow(data)),merged,data[length(data)])
   
-  names(p_aov_val)<-n
-  print(p_aov_val)
-  
-  t<-(which.min(p_aov_val)) # Find the predictor with most significant split.
-  
-  return(t)
+  print(str(list(p_adj_list,merged)))
+  return(list(p_adj_list,merged))
 }
 
 ##--------------------------------------------------------------------------##
@@ -59,27 +56,34 @@ ccmerge <- function(data = x,
 # OF DATAFRAME data AND SPITS OUT ADJ. P-VALUE WITH BONFERRONI CORRECTION
 ##--------------------------------------------------------------------------##
 
-merging_loop <- function(data, y, i, alpha_merge, alpha_split) {
+merged_category<-vector("list") # Initialization of a list to store data[,i] for respective predictor i
+
+merging_loop <- function(data, y, i, alpha_merge, depth) {
   
-  l = length(levels(data[,i]))  # of categories in a predictor data[,i]
+  l = length(levels(data[,i]))  # number of categories for a predictor i
   
   print(paste(colnames(data[i]), " has ", l, " levels"))
   cat("\n")
   
   if (l <= 2){
-    p_aov = as.matrix(summary((aov(data[, ncol(data)]~data[,i],data)))[[1]][,5])[1]
-    print(paste("========================Finished Merging loop=========================="))
     
-    #p_adj = p_aov * Bonferroni_correction(type,c,r)
+    print(paste("Total number of categories after",0,"-th Merging loop:", l))
+    
+    p_aov = as.matrix(summary((aov(data[, ncol(data)]~data[,i],data)))[[1]][,5])[1]   ##### This 3 lines of code always have to stick together
+    #p_adj = p_aov * Bonferroni_correction(type,c,r)                                  ##### This 3 lines of code always have to stick together
+    merged_category<-data[,i]                                                         ##### This 3 lines of code always have to stick together
+    
+    print(paste("========================Finished Merging loop=========================="))
     
     print(paste("Adusted p-value with bonferroni correction:",p_aov))
     cat("\n\n")
+    
   }else{
     k<-c(0)    #index k for loop
+    
     repeat{     #Do merging while l=>2 or p < alpha_merge
-     
-      k<-k+1   
       
+      k<-k+1   
       p = (pairwise.t.test(data[, ncol(data)],data[,i],p.adjust.method = "none",paired = FALSE,pool.sd = FALSE,var.equal = TRUE))$p.value
       
       if(class(data[,i])[1]=="factor"){
@@ -88,36 +92,44 @@ merging_loop <- function(data, y, i, alpha_merge, alpha_split) {
         p_max_value = max(diag(p), na.rm = TRUE) # This picks the max p value ordinal predictor, which means the least significant pair.
       }
       
-      if(l==2|(p_max_value < alpha_merge)) break
+      p_aov = as.matrix(summary((aov(data[, ncol(data)]~data[,i],data)))[[1]][,5])[1]   ##### This 3 lines of code always have to stick together
+      #p_adj = p_aov * Bonferroni_correction(type,c,r)                                  ##### This 3 lines of code always have to stick together
+      merged_category<-data[,i]                                                         ##### This 3 lines of code always have to stick together
       
-      p_max = which(p == max(p, na.rm = TRUE), arr.ind = TRUE) 
-      r <- rownames(p)[p_max[, 1]]
-      c <- colnames(p)[p_max[, 2]]
-      nameofMergedCategory <- paste(r, c, sep = "-") #------- MERGED HERE WITH A HYPHEN
-      
-      print(paste("Merged categories in",k,"-th Merging loop:", nameofMergedCategory))
-      
-      # CALL MERGING FUNCTION merging_function()
-      data[,i]<-merging_function(data, y, r, c, nameofMergedCategory, i)
-      
-      l = length(levels(data[,i]))
-      print(paste("Total number of categories after",k,"-th Merging loop:", l))
-      
-      print(paste("========================end of",k,"-th Merging loop=========================="))
-      cat("\n")
-      
+      if(l==2|(p_max_value <= alpha_merge)) {
+        break
+      }else{
+        p_max = which(p == max(p, na.rm = TRUE), arr.ind = TRUE) 
+        r <- rownames(p)[p_max[, 1]]
+        c <- colnames(p)[p_max[, 2]]
+        nameofMergedCategory <- paste(r, c, sep = "-") #------- MERGED HERE WITH A HYPHEN
+        
+        print(paste("Merged categories in",k,"-th Merging loop:", nameofMergedCategory))
+        
+        # CALL MERGING FUNCTION merging_function()
+        data[,i]<-merging_function(data, y, r, c, nameofMergedCategory, i)
+        
+        l = length(levels(data[,i]))
+        print(paste("Total number of categories after",k,"-th Merging loop:", l))
+        
+        #merged_category<-data[,i]
+        
+        print(paste("========================end of",k,"-th Merging loop=========================="))
+        cat("\n")
+      }
     }
+    p_aov = as.matrix(summary((aov(data[, ncol(data)]~data[,i],data)))[[1]][,5])[1]   ##### This 3 lines of code always have to stick together
+    #p_adj = p_aov * Bonferroni_correction(type,c,r)                                  ##### This 3 lines of code always have to stick together
+    merged_category<-data[,i]                                                         ##### This 3 lines of code always have to stick together
     
-    p_aov = as.matrix(summary((aov(data[, ncol(data)]~data[,i],data)))[[1]][,5])[1]
     print(paste("========================Finished Merging loop=========================="))
-    
-    #p_adj = p_aov * Bonferroni_correction(type,c,r)
     
     print(paste("Adusted p-value with bonferroni correction:",p_aov))
     cat("\n\n")
     
   }
-  return(p_aov)
+  # print(list(p_aov,merged_category))
+  return(list(p_aov,merged_category)) ## NOTE: p_aov should be changed to p_adj after bonferroni correction
 }
 
 
@@ -138,6 +150,6 @@ merging_function <- function(data, y, r, c, nameofMergedCategory, i) {
 bonferroni_correction <- function(type,c,r){
   
 }
-  
+
 
 ccmerge(a)
